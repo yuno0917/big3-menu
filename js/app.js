@@ -273,6 +273,8 @@
 
   function render(program, estimated) {
     renderSummary(program, estimated);
+    const sqLink = document.getElementById('squat-goal-link');
+    if (sqLink) sqLink.href = '/squat-goal/' + (program.maxes.squat ? '?m=' + encodeURIComponent(String(program.maxes.squat)) : '');
     tabsEl.replaceChildren(...program.weeks.map((w, i) =>
       h('button', {
         type: 'button',
