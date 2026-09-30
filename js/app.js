@@ -275,6 +275,8 @@
     renderSummary(program, estimated);
     const sqLink = document.getElementById('squat-goal-link');
     if (sqLink) sqLink.href = '/squat-goal/' + (program.maxes.squat ? '?m=' + encodeURIComponent(String(program.maxes.squat)) : '');
+    const bpLink = document.getElementById('bench-goal-link');
+    if (bpLink) bpLink.href = '/bench-goal/' + (program.maxes.bench ? '?m=' + encodeURIComponent(String(program.maxes.bench)) : '');
     tabsEl.replaceChildren(...program.weeks.map((w, i) =>
       h('button', {
         type: 'button',
