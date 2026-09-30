@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>BIG3 メニューメーカー ロジックのテスト</title>
+<style>
+  body { font-family: system-ui, "Yu Gothic UI", Meiryo, sans-serif; margin: 16px; line-height: 1.6; background: #fff; color: #1a1d21; }
+  #summary { font-size: 1.25rem; font-weight: 700; }
+  .pass { color: #2b8a3e; }
+  .fail { color: #c92a2a; font-weight: 700; }
+  li { margin: 2px 0; }
+</style>
+</head>
+<body>
+<h1>ロジックのテスト</h1>
+<p id="summary">実行中…</p>
+<ul id="results"></ul>
+
+<script src="js/onerm.js"></script>
+<script src="js/plates.js"></script>
+<script src="js/program-data.js"></script>
+<script src="js/program.js"></script>
+<script>
+(function () {
+  'use strict';
+  const B = window.Big3;
+  const results = [];
+
+  function test(name, fn) {
+    try { fn(); results.push({ name, ok: true }); }
+    catch (e) { results.push({ name, ok: false, msg: e && e.message ? e.message : String(e) }); }
+  }
+  function eq(actual, expected, label) {
+    const a = JSON.stringify(actual), b = JSON.stringify(expected);
+    if (a !== b) throw new Error((label ? label + ': ' : '') + '期待値 ' + b + ' / 実際 ' + a);
+  }
+  function ok(cond, label) { if (!cond) throw new Error(label || '条件を満たしていません'); }
+  const mainOf = (day, lift) => day.exercises.find(e => e.kind === 'main' && e.lift === lift);
+
+  // ---- 推定 1RM ----
+  test('推定1RM: 60kg × 5回 → 70kg', () => eq(B.estimate1RM(60, 5), 70));
+  test('推定1RM: 1回ならその重量', () => eq(B.estimate1RM(100, 1), 100));
+  test('推定1RM: 不正な入力は null', () => { eq(B.estimate1RM(0, 5), null); eq(B.estimate1RM(60, 0), null); eq(B.estimate1RM('', ''), null); });
+  test('推定1RM: 11回以上は10回として計算', () => eq(B.estimate1RM(60, 12), 80));
+
+  // ---- 丸め・プレート ----
+  const P25 = B.plateSetFor(2.5);
+  test('丸め: 50.4 → 50（2.5kg刻み）', () => eq(B.roundWeight(50.4, 2.5, 20), 50));
+  test('丸め: 37.8 → 37.5（2.5kg刻み）', () => eq(B.roundWeight(37.8, 2.5, 20), 37.5));
+  test('丸め: バーより軽い 16.2 → 20', () => eq(B.roundWeight(16.2, 2.5, 20), 20));
+  test('丸め: 52.4 → 50（5kg刻み）', () => eq(B.roundWeight(52.4, 5, 20), 50));
+  test('プレート: 50kg → 片側 15', () => eq(B.platesPerSide(50, 20, P25).plates, [15]));
+  test('プレート: 37.5kg → 片側 5 + 2.5 + 1.25', () => eq(B.platesPerSide(37.5, 20, P25).plates, [5, 2.5, 1.25]));
+  test('プレート: 20kg → なし', () => eq(B.platesPerSide(20, 20, P25).plates, []));
+  test('プレート: 102.5kg → 片側 20 + 20 + 1.25', () => eq(B.platesPerSide(102.5, 20, P25).plates, [20, 20, 1.25]));
+  test('プレート: 5kg刻みでは 1.25kg を使わない', () => { ok(B.plateSetFor(5).indexOf(1.25) === -1); eq(B.platesPerSide(55, 20, B.plateSetFor(5)).plates, [15, 2.5]); });
+  test('プレート表示: バーのみ / 片側表記', () => { eq(B.formatPlates([]), 'バーのみ'); eq(B.formatPlates([15]), '片側 15kg'); });
+
+  // ---- メニュー生成 ----
+  const base = { level: 'beginner', freq: 3, step: 2.5, maxes: { squat: 80, bench: 60, deadlift: 100 } };
+  const prog = B.generateProgram(base);
+
+  test('8週間分ある', () => eq(prog.weeks.length, 8));
+  test('週3回なら毎週3日', () => prog.weeks.forEach(w => eq(w.days.length, 3, '第' + w.week + '週')));
+  test('週2回・週4回の日数', () => {
+    B.generateProgram({ ...base, freq: 2 }).weeks.forEach(w => eq(w.days.length, 2));
+    B.generateProgram({ ...base, freq: 4 }).weeks.forEach(w => eq(w.days.length, 4));
+  });
+  test('基準重量: 初心者は MAX の 90%、中級者は 95%', () => {
+    eq(prog.tms, { squat: 72, bench: 54, deadlift: 90 });
+    eq(B.generateProgram({ ...base, level: 'intermediate' }).tms.squat, 76);
+  });
+  test('初心者1週目スクワット: 50kg 5×5 片側15', () => {
+    const ex = mainOf(prog.weeks[0].days[0], 'squat');
+    eq([ex.weight, ex.sets, ex.reps, ex.plates], [50, 5, 5, [15]]);
+  });
+  test('初心者1週目ベンチ: 37.5kg 片側 5 + 2.5 + 1.25', () => {
+    const ex = mainOf(prog.weeks[0].days[0], 'bench');
+    eq([ex.weight, ex.plates], [37.5, [5, 2.5, 1.25]]);
+  });
+  test('ベンチMAX30kg・4週目: 20kg（バーのみ）', () => {
+    const p = B.generateProgram({ ...base, maxes: { ...base.maxes, bench: 30 } });
+    const ex = mainOf(p.weeks[3].days[0], 'bench');
+    eq([ex.weight, ex.plates], [20, []]);
+  });
+  test('軽めの日: 重量 ×0.85、セットは2減（最低2）', () => {
+    const ex = mainOf(prog.weeks[0].days[1], 'bench');
+    eq([ex.light, ex.weight, ex.sets], [true, 32.5, 3]);
+    const deload = mainOf(prog.weeks[3].days[2], 'squat');
+    eq([deload.light, deload.sets], [true, 2]);
+  });
+  test('デッドリフトは全パターンで3セット以下', () => {
+    [2, 3, 4].forEach(f => ['beginner', 'intermediate'].forEach(lv => {
+      B.generateProgram({ ...base, freq: f, level: lv }).weeks.forEach(w => w.days.forEach(d => {
+        d.exercises.filter(e => e.kind === 'main' && e.lift === 'deadlift')
+          .forEach(e => ok(e.sets <= 3, '週' + f + ' ' + lv + ' 第' + w.week + '週: ' + e.sets + 'セット'));
+      }));
+    }));
+  });
+  test('OHPなし・週3のDay2: デッドリフト + ベンチ軽め', () => {
+    const mains = prog.weeks[0].days[1].exercises.filter(e => e.kind === 'main');
+    eq(mains.map(e => [e.lift, e.light]), [['deadlift', false], ['bench', true]]);
+  });
+  test('OHPあり・週3のDay2: デッドリフト + OHP', () => {
+    const p = B.generateProgram({ ...base, maxes: { ...base.maxes, ohp: 40 } });
+    eq(p.weeks[0].days[1].exercises.filter(e => e.kind === 'main').map(e => e.lift), ['deadlift', 'ohp']);
+  });
+  test('OHPなし・週4のDay2: ベンチのみ', () => {
+    const p = B.generateProgram({ ...base, freq: 4 });
+    eq(p.weeks[0].days[1].exercises.filter(e => e.kind === 'main').map(e => e.lift), ['bench']);
+  });
+  test('8週目の最終日だけが MAX 測定日', () => {
+    [2, 3, 4].forEach(f => {
+      const p = B.generateProgram({ ...base, freq: f });
+      p.weeks.forEach((w, wi) => w.days.forEach((d, di) => {
+        eq(d.test, wi === 7 && di === f - 1, '週' + f + ' 第' + w.week + '週 ' + d.name);
+      }));
+    });
+  });
+  test('測定日: 入力した種目がすべて並ぶ', () => {
+    eq(prog.weeks[7].days[2].exercises.map(e => e.lift), ['squat', 'bench', 'deadlift']);
+    const p = B.generateProgram({ ...base, maxes: { ...base.maxes, ohp: 40 } });
+    eq(p.weeks[7].days[2].exercises.map(e => e.lift), ['squat', 'bench', 'deadlift', 'ohp']);
+  });
+  test('測定日: 重量は段階的に増え、最後が現在のMAX', () => {
+    prog.weeks[7].days[2].exercises.forEach(ex => {
+      for (let i = 1; i < ex.steps.length; i++) ok(ex.steps[i].weight > ex.steps[i - 1].weight, ex.name + ' の段階');
+      const last = ex.steps[ex.steps.length - 1];
+      ok(last.attempt, ex.name + ' の最後が挑戦');
+      eq(last.weight, ex.max, ex.name + ' の挑戦重量');
+    });
+    const sq = prog.weeks[7].days[2].exercises[0];
+    eq(sq.steps.map(s => s.weight), [20, 40, 55, 65, 72.5, 80]);
+    eq(sq.nextTry, 82.5);
+  });
+  test('測定日: MAX がバーと同じでも挑戦重量はある', () => {
+    const p = B.generateProgram({ ...base, maxes: { ...base.maxes, bench: 20 } });
+    const b = p.weeks[7].days[2].exercises.find(e => e.lift === 'bench');
+    eq(b.steps.map(s => [s.weight, s.attempt]), [[20, true]]);
+  });
+  test('不正な入力は既定値に直す', () => {
+    const p = B.generateProgram({ level: 'x', freq: 9, step: 3, maxes: { squat: 80, bench: 60, deadlift: 100, ohp: -5 } });
+    eq([p.level, p.freq, p.step, Object.keys(p.maxes)], ['beginner', 3, 2.5, ['squat', 'bench', 'deadlift']]);
+  });
+  test('全パターンで重量は刻みの倍数かつ20kg以上', () => {
+    [2.5, 5].forEach(step => [2, 3, 4].forEach(f => ['beginner', 'intermediate'].forEach(lv => {
+      B.generateProgram({ level: lv, freq: f, step, maxes: { squat: 143, bench: 97.5, deadlift: 181, ohp: 52 } })
+        .weeks.forEach(w => w.days.forEach(d => d.exercises.filter(e => e.kind === 'main').forEach(e => {
+          ok(e.weight >= 20, e.name + ' ' + e.weight);
+          ok(Math.abs(e.weight / step - Math.round(e.weight / step)) < 1e-9, e.name + ' ' + e.weight + ' が ' + step + 'kg 刻みでない');
+          const sum = 20 + 2 * e.plates.reduce((a, b) => a + b, 0);
+          ok(Math.abs(sum - e.weight) < 1e-9, e.name + ' のプレート合計 ' + sum + ' ≠ ' + e.weight);
+        })));
+    })));
+  });
+
+  // ---- 結果の表示 ----
+  const ul = document.getElementById('results');
+  results.forEach(r => {
+    const li = document.createElement('li');
+    li.className = r.ok ? 'pass' : 'fail';
+    li.textContent = (r.ok ? 'PASS ' : 'FAIL ') + r.name + (r.msg ? '：' + r.msg : '');
+    ul.appendChild(li);
+  });
+  const failed = results.filter(r => !r.ok).length;
+  const s = document.getElementById('summary');
+  s.textContent = failed ? 'FAIL：' + results.length + '件中 ' + failed + '件失敗' : 'ALL PASS：' + results.length + '件';
+  s.className = failed ? 'fail' : 'pass';
+  document.body.setAttribute('data-result', failed ? 'fail' : 'pass');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BIG3 メニューメーカー｜スクワット・ベンチプレス・デッドリフトの8週間メニューを自動作成</title>
+<meta name="description" content="スクワット・ベンチプレス・デッドリフトのMAXを入れるだけで、初心者〜中級者向けの8週間トレーニングメニューを自動で作成。毎回の重量・セット数・プレートの付け方まで表示します。無料・登録不要。">
+<link rel="canonical" href="https://yuno0917.github.io/big3-menu/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yuno0917.github.io/big3-menu/">
+<meta property="og:title" content="BIG3 メニューメーカー">
+<meta property="og:description" content="MAXを入れるだけで、BIG3の8週間メニューを自動作成。重量とプレートの付け方まで表示します。">
+<meta name="theme-color" content="#d9480f">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <p class="eyebrow">無料・登録不要</p>
+    <h1>BIG3 メニューメーカー</h1>
+    <p class="lead">MAXを入れるだけで、スクワット・ベンチプレス・デッドリフトの8週間メニューを自動で作ります。毎回の重量とプレートの付け方まで表示します。</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="card" id="form-section" aria-labelledby="form-title">
+    <h2 id="form-title"><span class="step-num">1</span>あなたの情報</h2>
+
+    <form id="menu-form" novalidate>
+      <fieldset>
+        <legend>入力方法</legend>
+        <div class="seg">
+          <label><input type="radio" name="mode" value="max" checked><span>MAXを入力</span></label>
+          <label><input type="radio" name="mode" value="reps"><span>重量と回数から推定</span></label>
+        </div>
+        <p class="hint mode-reps" hidden>最近やったセットの重量と回数を入れてください。1〜10回で入力でき、5回前後がいちばん正確です。</p>
+      </fieldset>
+
+      <div class="lifts">
+        <div class="lift-row" data-lift="squat">
+          <div class="lift-name">スクワット</div>
+          <div class="inputs">
+            <label class="num mode-max">MAX <input type="number" name="squat-max" inputmode="decimal" min="20" max="500" step="0.5" placeholder="80"> kg</label>
+            <span class="mode-reps" hidden>
+              <label class="num"><input type="number" name="squat-w" inputmode="decimal" min="1" step="0.5" placeholder="60" aria-label="スクワットの重量"> kg</label>
+              <span class="times">×</span>
+              <label class="num"><input type="number" name="squat-r" inputmode="numeric" min="1" max="10" step="1" placeholder="5" aria-label="スクワットの回数"> 回</label>
+            </span>
+          </div>
+        </div>
+
+        <div class="lift-row" data-lift="bench">
+          <div class="lift-name">ベンチプレス</div>
+          <div class="inputs">
+            <label class="num mode-max">MAX <input type="number" name="bench-max" inputmode="decimal" min="20" max="500" step="0.5" placeholder="60"> kg</label>
+            <span class="mode-reps" hidden>
+              <label class="num"><input type="number" name="bench-w" inputmode="decimal" min="1" step="0.5" placeholder="50" aria-label="ベンチプレスの重量"> kg</label>
+              <span class="times">×</span>
+              <label class="num"><input type="number" name="bench-r" inputmode="numeric" min="1" max="10" step="1" placeholder="5" aria-label="ベンチプレスの回数"> 回</label>
+            </span>
+          </div>
+        </div>
+
+        <div class="lift-row" data-lift="deadlift">
+          <div class="lift-name">デッドリフト</div>
+          <div class="inputs">
+            <label class="num mode-max">MAX <input type="number" name="deadlift-max" inputmode="decimal" min="20" max="500" step="0.5" placeholder="100"> kg</label>
+            <span class="mode-reps" hidden>
+              <label class="num"><input type="number" name="deadlift-w" inputmode="decimal" min="1" step="0.5" placeholder="80" aria-label="デッドリフトの重量"> kg</label>
+              <span class="times">×</span>
+              <label class="num"><input type="number" name="deadlift-r" inputmode="numeric" min="1" max="10" step="1" placeholder="5" aria-label="デッドリフトの回数"> 回</label>
+            </span>
+          </div>
+        </div>
+
+        <div class="lift-row is-off" data-lift="ohp">
+          <label class="lift-name check"><input type="checkbox" name="ohp-on"> オーバーヘッドプレス<small>任意</small></label>
+          <div class="inputs">
+            <label class="num mode-max">MAX <input type="number" name="ohp-max" inputmode="decimal" min="20" max="500" step="0.5" placeholder="40" disabled> kg</label>
+            <span class="mode-reps" hidden>
+              <label class="num"><input type="number" name="ohp-w" inputmode="decimal" min="1" step="0.5" placeholder="30" aria-label="オーバーヘッドプレスの重量" disabled> kg</label>
+              <span class="times">×</span>
+              <label class="num"><input type="number" name="ohp-r" inputmode="numeric" min="1" max="10" step="1" placeholder="5" aria-label="オーバーヘッドプレスの回数" disabled> 回</label>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <fieldset>
+        <legend>レベル</legend>
+        <div class="seg">
+          <label><input type="radio" name="level" value="beginner" checked><span>初心者<small>筋トレ歴1年未満、または毎週のように重量が伸びている</small></span></label>
+          <label><input type="radio" name="level" value="intermediate"><span>中級者<small>1年以上続けていて、伸びが月単位になってきた</small></span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>週に何回ジムに行きますか</legend>
+        <div class="seg seg-compact">
+          <label><input type="radio" name="freq" value="2"><span>週2回</span></label>
+          <label><input type="radio" name="freq" value="3" checked><span>週3回</span></label>
+          <label><input type="radio" name="freq" value="4"><span>週4回</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>重量の刻み</legend>
+        <div class="seg seg-compact">
+          <label><input type="radio" name="step" value="2.5" checked><span>2.5kg<small>1.25kgプレートあり</small></span></label>
+          <label><input type="radio" name="step" value="5"><span>5kg<small>最小が2.5kgプレート</small></span></label>
+        </div>
+      </fieldset>
+
+      <p class="error" id="form-error" role="alert" hidden></p>
+      <button type="submit" class="primary">メニューを作る</button>
+    </form>
+  </section>
+
+  <section id="result" aria-labelledby="result-title" hidden>
+    <div class="card">
+      <h2 id="result-title"><span class="step-num">2</span>あなたの8週間メニュー</h2>
+      <p class="summary-meta" id="summary-meta"></p>
+      <ul class="summary-list" id="summary-list"></ul>
+      <p class="hint">基準重量はMAXより少し低い数字です。毎回の重量は、この基準重量から計算しています。</p>
+      <div class="actions">
+        <button type="button" class="secondary" id="share-btn">このメニューのリンクをコピー</button>
+        <button type="button" class="secondary" id="print-btn">印刷する</button>
+      </div>
+      <div class="share-box" id="share-box" hidden>
+        <input type="text" id="share-url" readonly aria-label="共有リンク">
+        <p class="share-status" id="share-status" role="status"></p>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="週を選ぶ" id="week-tabs"></div>
+    <div id="week-panels"></div>
+    <p class="warmup-note">メイン種目の前には、バーのみと軽い重量で2〜3セットのウォームアップをしてください。セット間の休憩は、メイン種目で2〜3分、補助種目で1〜2分が目安です。</p>
+  </section>
+
+  <section class="card article" aria-labelledby="howto-title">
+    <h2 id="howto-title">使い方</h2>
+    <ol>
+      <li>スクワット・ベンチプレス・デッドリフトのMAXを入れます。MAXは1回だけ挙げられる最大の重量です。わからない場合は「重量と回数から推定」を選んでください。</li>
+      <li>レベルと、週に何回トレーニングするかを選んで「メニューを作る」を押します。</li>
+      <li>週ごとのタブを切り替えて、その日の重量・セット数・プレートの付け方を確認します。</li>
+    </ol>
+
+    <h2>プログラムの考え方</h2>
+    <h3>MAXより少し低い「基準重量」から計算する</h3>
+    <p>毎回の重量は、MAXの90%（中級者は95%）を基準重量として計算します。少し低めの基準にすることで、フォームを崩さずに8週間やり切れます。</p>
+    <h3>前半は回数多め、後半は重く少なく</h3>
+    <p>1〜3週目は5回前後で量をこなし、5〜7週目は重量を上げて回数を減らします。4週目は軽め週で、疲れを抜いて後半に備えます。</p>
+    <h3>8週目に新しいMAXを測る</h3>
+    <p>8週目の最終日にMAXを測ります。その数字で、次の8週間のメニューを作り直してください。</p>
+    <div class="table-wrap">
+      <table class="plan-table" id="plan-table">
+        <caption>メイン種目の重量とセット数（基準重量に対する割合）</caption>
+        <thead><tr><th scope="col">週</th><th scope="col">初心者</th><th scope="col">中級者</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <h2>RPEとは</h2>
+    <p>RPEは、セットのきつさを1〜10で表す目安です。RPE10は限界、RPE9はあと1回、RPE8はあと2回挙げられる状態です。表示されたRPEより明らかにきつい日は、重量を2.5〜5kg下げて構いません。</p>
+
+    <h2>よくある質問</h2>
+    <h3>MAXを測ったことがありません</h3>
+    <p>「重量と回数から推定」を選んでください。最近やったセットの重量と回数から、MAXを計算します。</p>
+    <h3>補助種目の重さはどう決めますか</h3>
+    <p>指定の回数をやって、あと2〜3回できるくらいの重さにします。RPEでいうと7〜8です。</p>
+    <h3>予定の回数ができませんでした</h3>
+    <p>その日は無理をせずに終えて、次回同じ重量でやり直します。2回続けてできない場合は、MAXを5%下げてメニューを作り直してください。</p>
+    <h3>8週間が終わったら？</h3>
+    <p>8週目に測った新しいMAXを入れて、メニューを作り直します。これをくり返して記録を伸ばしていきます。</p>
+    <h3>痛みが出たら？</h3>
+    <p>すぐに中止してください。痛みが続く場合は、医師や理学療法士に相談してください。</p>
+
+    <h2 id="disclaimer">免責事項</h2>
+    <div class="disclaimer">
+      <p>このツールのメニューは一般的な情報です。個人の体調やケガの経歴は考慮していません。持病がある方や体調に不安がある方は、医師に相談してから始めてください。</p>
+      <p>トレーニングは自己責任で行ってください。重い重量を扱うときは、補助者をつけるかセーフティバーを使ってください。このツールの利用によって生じたケガや損害について、運営者は責任を負いません。</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a href="privacy.html">プライバシーポリシー</a>
+    <span aria-hidden="true">・</span>
+    <a href="#disclaimer">免責事項</a>
+  </div>
+</footer>
+
+<script src="js/onerm.js"></script>
+<script src="js/plates.js"></script>
+<script src="js/program-data.js"></script>
+<script src="js/program.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
