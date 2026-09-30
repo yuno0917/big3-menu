@@ -205,7 +205,7 @@
         ),
         h('div', { class: 'ex-load' },
           h('span', { class: 'ex-weight' }, fmt(ex.weight), h('small', { text: 'kg' })),
-          h('span', { class: 'ex-sets', text: ex.sets + 'セット × ' + ex.reps + '回' })
+          h('span', { class: 'ex-sets', text: '×' + ex.reps + 'rep ' + ex.sets + 'set' })
         ),
         h('div', { class: 'ex-meta' },
           h('span', { text: 'RPE目安 ' + ex.rpe }),
@@ -218,7 +218,7 @@
         h('span', { class: 'ex-name', text: ex.name }),
         h('span', { class: 'badge badge-acc', text: '補助' })
       ),
-      h('div', { class: 'ex-load' }, h('span', { class: 'ex-sets', text: ex.sets + 'セット × ' + ex.reps })),
+      h('div', { class: 'ex-load' }, h('span', { class: 'ex-sets', text: repText(ex.reps) + ' ' + ex.sets + 'set' })),
       h('div', { class: 'ex-meta' }, h('span', { text: '重さは RPE ' + ex.rpe + ' になるように調整' }))
     );
   }
@@ -238,7 +238,7 @@
         h('h5', { text: ex.name }),
         h('ol', { class: 'test-steps' }, ex.steps.map(s =>
           h('li', { class: s.attempt ? 'is-attempt' : null },
-            h('span', { class: 'ts-weight', text: fmt(s.weight) + 'kg × ' + s.reps + '回' }),
+            h('span', { class: 'ts-weight', text: fmt(s.weight) + 'kg ×' + s.reps + 'rep' }),
             h('span', { class: 'ts-note', text: s.label + '・' + B.formatPlates(s.plates) })
           )
         )),
@@ -330,8 +330,11 @@
     if (first) first.focus({ preventScroll: true });
   }
 
+  // 回数の表示（例: 6 → '6rep'、'10回' → '10rep'。秒で数える種目はそのまま）
+  const repText = r => (typeof r === 'number' ? r + 'rep' : String(r).replace(/回$/, 'rep'));
+
   function planCell(spec) {
-    return fmt(spec.pct * 100) + '%　' + spec.sets + 'セット × ' + spec.reps + '回';
+    return fmt(spec.pct * 100) + '%　×' + spec.reps + 'rep ' + spec.sets + 'set';
   }
 
   function renderPlanTable() {
