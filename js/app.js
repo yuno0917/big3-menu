@@ -14,6 +14,7 @@
   const form = document.getElementById('menu-form');
   const formSection = document.getElementById('form-section');
   const errorBox = document.getElementById('form-error');
+  const modeBtn = document.getElementById('mode-btn');
   const resultSection = document.getElementById('result');
   const summaryMeta = document.getElementById('summary-meta');
   const summaryList = document.getElementById('summary-list');
@@ -73,10 +74,11 @@
 
   function applyState(s) {
     if (!s || typeof s !== 'object') return;
-    setRadio('mode', s.mode);
+    form.elements.mode.value = s.mode === 'reps' ? 'reps' : 'max';
     setRadio('level', s.level);
     setRadio('freq', s.freq);
     setRadio('step', s.step);
+    document.getElementById('step-more').open = String(s.step) === '5';
     field('ohp-on').checked = !!s.ohpOn;
     LIFTS.forEach(l => {
       const v = (s.values && s.values[l]) || {};
@@ -91,6 +93,7 @@
     const mode = form.elements.mode.value;
     form.querySelectorAll('.mode-max').forEach(e => { e.hidden = mode !== 'max'; });
     form.querySelectorAll('.mode-reps').forEach(e => { e.hidden = mode !== 'reps'; });
+    modeBtn.textContent = mode === 'reps' ? 'MAXを直接入れる' : 'MAXがわからないときは、重量と回数から計算する';
     const on = field('ohp-on').checked;
     const ohpRow = form.querySelector('[data-lift="ohp"]');
     ohpRow.classList.toggle('is-off', !on);
@@ -321,7 +324,7 @@
   });
 
   function goToForm() {
-    setRadio('mode', 'max');
+    form.elements.mode.value = 'max';
     syncForm();
     formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     const first = field('squat-max');
@@ -375,6 +378,12 @@
     generate(true);
   });
   form.addEventListener('change', syncForm);
+  modeBtn.addEventListener('click', () => {
+    form.elements.mode.value = form.elements.mode.value === 'reps' ? 'max' : 'reps';
+    syncForm();
+    const first = field(form.elements.mode.value === 'reps' ? 'squat-w' : 'squat-max');
+    if (first) first.focus();
+  });
 
   shareBtn.addEventListener('click', async () => {
     if (!currentInput) return;

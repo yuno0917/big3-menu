@@ -60,14 +60,7 @@
     <h2 id="form-title">あなたの情報</h2>
 
     <form id="menu-form" novalidate>
-      <fieldset>
-        <legend>入力方法</legend>
-        <div class="seg seg-mini">
-          <label><input type="radio" name="mode" value="max" checked><span>MAXを入力</span></label>
-          <label><input type="radio" name="mode" value="reps"><span>重量と回数から推定</span></label>
-        </div>
-        <p class="hint mode-reps" hidden>最近やったセットの重量と回数を入れます（1〜10回。5回前後がいちばん正確です）。</p>
-      </fieldset>
+      <input type="hidden" name="mode" value="max">
 
       <div class="lifts">
         <div class="lift-row" data-lift="squat">
@@ -118,6 +111,8 @@
           </div>
         </div>
       </div>
+      <p class="mode-line"><button type="button" class="link-btn" id="mode-btn">MAXがわからないときは、重量と回数から計算する</button></p>
+      <p class="hint mode-reps" hidden>最近やったセットの重量と回数を入れます（1〜10回。5回前後がいちばん正確です）。</p>
 
       <fieldset>
         <legend>レベル</legend>
@@ -137,6 +132,8 @@
         </div>
       </fieldset>
 
+      <details class="more form-more" id="step-more">
+      <summary>重量の刻みを変える</summary>
       <fieldset>
         <legend>重量の刻み</legend>
         <div class="seg seg-compact">
@@ -145,6 +142,7 @@
         </div>
         <p class="hint">1.25kgのプレートがないジムでは、5kg刻みを選びます。</p>
       </fieldset>
+      </details>
 
       <p class="error" id="form-error" role="alert" hidden></p>
       <button type="submit" class="primary">メニューを作る</button>
