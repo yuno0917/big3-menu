@@ -49,25 +49,24 @@
 
 <header class="site-header">
   <div class="wrap">
-    <p class="eyebrow">無料・登録不要</p>
     <h1>BIG3 メニューメーカー</h1>
-    <p class="lead">MAXを入れるだけで、スクワット・ベンチプレス・デッドリフトの8週間メニューを自動で作ります。毎回の重量とプレートの付け方まで表示します。</p>
+    <p class="lead">MAXを入れるだけで、スクワット・ベンチプレス・デッドリフトの8週間メニューを作ります。</p>
   </div>
 </header>
 
 <main class="wrap">
 
   <section class="card" id="form-section" aria-labelledby="form-title">
-    <h2 id="form-title"><span class="step-num">1</span>あなたの情報</h2>
+    <h2 id="form-title">あなたの情報</h2>
 
     <form id="menu-form" novalidate>
       <fieldset>
         <legend>入力方法</legend>
-        <div class="seg">
+        <div class="seg seg-mini">
           <label><input type="radio" name="mode" value="max" checked><span>MAXを入力</span></label>
           <label><input type="radio" name="mode" value="reps"><span>重量と回数から推定</span></label>
         </div>
-        <p class="hint mode-reps" hidden>最近やったセットの重量と回数を入れてください。1〜10回で入力でき、5回前後がいちばん正確です。</p>
+        <p class="hint mode-reps" hidden>最近やったセットの重量と回数を入れます（1〜10回。5回前後がいちばん正確です）。</p>
       </fieldset>
 
       <div class="lifts">
@@ -123,9 +122,10 @@
       <fieldset>
         <legend>レベル</legend>
         <div class="seg">
-          <label><input type="radio" name="level" value="beginner" checked><span>初心者<small>筋トレ歴1年未満、または毎週のように重量が伸びている</small></span></label>
-          <label><input type="radio" name="level" value="intermediate"><span>中級者<small>1年以上続けていて、伸びが月単位になってきた</small></span></label>
+          <label><input type="radio" name="level" value="beginner" checked><span>初心者</span></label>
+          <label><input type="radio" name="level" value="intermediate"><span>中級者</span></label>
         </div>
+        <p class="hint">筋トレ歴1年未満、または毎週のように重量が伸びているなら初心者です。</p>
       </fieldset>
 
       <fieldset>
@@ -140,9 +140,10 @@
       <fieldset>
         <legend>重量の刻み</legend>
         <div class="seg seg-compact">
-          <label><input type="radio" name="step" value="2.5" checked><span>2.5kg<small>1.25kgプレートあり</small></span></label>
-          <label><input type="radio" name="step" value="5"><span>5kg<small>最小が2.5kgプレート</small></span></label>
+          <label><input type="radio" name="step" value="2.5" checked><span>2.5kg刻み</span></label>
+          <label><input type="radio" name="step" value="5"><span>5kg刻み</span></label>
         </div>
+        <p class="hint">1.25kgのプレートがないジムでは、5kg刻みを選びます。</p>
       </fieldset>
 
       <p class="error" id="form-error" role="alert" hidden></p>
@@ -152,14 +153,18 @@
 
   <section id="result" aria-labelledby="result-title" hidden>
     <div class="card">
-      <h2 id="result-title"><span class="step-num">2</span>あなたの8週間メニュー</h2>
+      <h2 id="result-title">あなたの8週間メニュー</h2>
       <p class="summary-meta" id="summary-meta"></p>
       <ul class="summary-list" id="summary-list"></ul>
-      <p class="hint">基準重量はMAXより少し低い数字です。毎回の重量は、この基準重量から計算しています。</p>
-      <p class="hint">何週間でどれくらい伸びそうかは、<a id="squat-goal-link" href="/squat-goal/">スクワット伸び計算機</a>と<a id="bench-goal-link" href="/bench-goal/">ベンチプレス伸び計算機</a>で予測できます。</p>
+      <ul class="rules">
+        <li>メイン種目の前に、バーだけと軽い重量で2〜3セットのウォームアップをします。</li>
+        <li>補助種目は、あと2〜3回できる重さ（RPE 7〜8）で行います。</li>
+        <li>休憩は、メイン種目で2〜3分、補助種目で1〜2分が目安です。</li>
+      </ul>
       <div class="actions">
-        <button type="button" class="secondary" id="share-btn">このメニューのリンクをコピー</button>
-        <button type="button" class="secondary" id="print-btn">印刷する</button>
+        <button type="button" class="secondary" id="share-btn">リンクをコピー</button>
+        <button type="button" class="secondary" id="print-btn">印刷</button>
+        <span class="hint">伸びの予測：<a id="squat-goal-link" href="/squat-goal/">スクワット</a>・<a id="bench-goal-link" href="/bench-goal/">ベンチプレス</a></span>
       </div>
       <div class="share-box" id="share-box" hidden>
         <input type="text" id="share-url" readonly aria-label="共有リンク">
@@ -169,34 +174,28 @@
 
     <div class="tabs" role="tablist" aria-label="週を選ぶ" id="week-tabs"></div>
     <div id="week-panels"></div>
-    <p class="warmup-note">メイン種目の前には、バーのみと軽い重量で2〜3セットのウォームアップをしてください。セット間の休憩は、メイン種目で2〜3分、補助種目で1〜2分が目安です。</p>
   </section>
 
   <section class="more-articles" aria-labelledby="more-title">
     <h2 class="section-title" id="more-title">BIG3をもっと知る</h2>
-    <ul class="article-list">
-      <li><a href="articles/big3-beginner.html"><span class="al-title">BIG3とは？初心者が最初の3か月でやること</span><span class="al-desc">週の回数、最初の重量の決め方、安全のための準備。</span></a></li>
-      <li><a href="articles/1rm.html"><span class="al-title">MAX（1RM）の測り方と推定方法</span><span class="al-desc">重量と回数からMAXを計算するツールと換算表つき。</span></a></li>
-      <li><a href="articles/rpe.html"><span class="al-title">RPEとは？「きつさ」で重量を調整する方法</span><span class="al-desc">RPEの目安表と、初心者が正しくつけるコツ。</span></a></li>
-      <li><a href="articles/index.html"><span class="al-title">記事一覧を見る</span><span class="al-desc">3種目のフォーム解説、停滞したときの対処法など。</span></a></li>
+    <ul class="link-list">
+      <li><a href="articles/big3-beginner.html">BIG3とは？初心者が最初の3か月でやること</a></li>
+      <li><a href="articles/1rm.html">MAX（1RM）の測り方と推定方法</a></li>
+      <li><a href="articles/rpe.html">RPEとは？「きつさ」で重量を調整する方法</a></li>
+      <li><a href="articles/index.html">記事一覧</a></li>
     </ul>
   </section>
 
-  <section class="card article" aria-labelledby="howto-title">
-    <h2 id="howto-title">使い方</h2>
-    <ol>
-      <li>スクワット・ベンチプレス・デッドリフトのMAXを入れます。MAXは1回だけ挙げられる最大の重量です。わからない場合は「重量と回数から推定」を選んでください。</li>
-      <li>レベルと、週に何回トレーニングするかを選んで「メニューを作る」を押します。</li>
-      <li>週ごとのタブを切り替えて、その日の重量・セット数・プレートの付け方を確認します。</li>
-    </ol>
-
-    <h2>プログラムの考え方</h2>
+  <section class="card article" aria-labelledby="plan-title">
+    <h2 id="plan-title">プログラムの考え方</h2>
     <h3>MAXより少し低い「基準重量」から計算する</h3>
     <p>毎回の重量は、MAXの90%（中級者は95%）を基準重量として計算します。少し低めの基準にすることで、フォームを崩さずに8週間やり切れます。</p>
     <h3>前半は回数多め、後半は重く少なく</h3>
     <p>1〜3週目は5回前後で量をこなし、5〜7週目は重量を上げて回数を減らします。4週目は軽め週で、疲れを抜いて後半に備えます。</p>
     <h3>8週目に新しいMAXを測る</h3>
     <p>8週目の最終日にMAXを測ります。その数字で、次の8週間のメニューを作り直してください。</p>
+    <details class="more">
+    <summary>週ごとの重量とセット数の表を見る</summary>
     <div class="table-wrap">
       <table class="plan-table" id="plan-table">
         <caption>メイン種目の重量とセット数（基準重量に対する割合）</caption>
@@ -204,29 +203,23 @@
         <tbody></tbody>
       </table>
     </div>
+    </details>
 
     <h2>RPEとは</h2>
     <p>RPEは、セットのきつさを1〜10で表す目安です。RPE10は限界、RPE9はあと1回、RPE8はあと2回挙げられる状態です。表示されたRPEより明らかにきつい日は、重量を2.5〜5kg下げて構いません。</p>
 
     <h2>よくある質問</h2>
-    <h3>MAXを測ったことがありません</h3>
-    <p>「重量と回数から推定」を選んでください。最近やったセットの重量と回数から、MAXを計算します。</p>
-    <h3>補助種目の重さはどう決めますか</h3>
-    <p>指定の回数をやって、あと2〜3回できるくらいの重さにします。RPEでいうと7〜8です。</p>
-    <h3>予定の回数ができませんでした</h3>
-    <p>その日は無理をせずに終えて、次回同じ重量でやり直します。2回続けてできない場合は、MAXを5%下げてメニューを作り直してください。</p>
-    <h3>8週間が終わったら？</h3>
-    <p>8週目に測った新しいMAXを入れて、メニューを作り直します。これをくり返して記録を伸ばしていきます。</p>
-    <h3>見た目を変えたい場合は？</h3>
-    <p>このツールは BIG3 の重量を伸ばすためのものです。全身の見た目をバランスよく変えたい場合は、<a href="/body-menu/">ボディメイク メニューメーカー</a>を使ってください。</p>
-    <h3>スクワットだけを重点的に伸ばしたい場合は？</h3>
-    <p><a href="/squat-program/">スクワット プログラムメーカー</a>で、スクワット専用のプログラムを作れます。苦手なところに合わせた種目や補助種目も入ります。</p>
-    <h3>ベンチプレスだけを重点的に伸ばしたい場合は？</h3>
-    <p><a href="/bench-program/">ベンチプレス プログラムメーカー</a>で、ベンチプレス専用のプログラムを作れます。苦手なところに合わせた種目や補助種目も入ります。</p>
-    <h3>何週間で何kg伸びますか？</h3>
-    <p>今の強さによって大きく変わります。研究のデータから予測する<a href="/squat-goal/">スクワット伸び計算機</a>で、目安を確かめられます。</p>
-    <h3>痛みが出たら？</h3>
-    <p>すぐに中止してください。痛みが続く場合は、医師や理学療法士に相談してください。</p>
+    <div class="faq">
+      <details><summary>MAXを測ったことがありません</summary><p>「重量と回数から推定」を選んでください。最近やったセットの重量と回数から、MAXを計算します。</p></details>
+      <details><summary>補助種目の重さはどう決めますか</summary><p>指定の回数をやって、あと2〜3回できるくらいの重さにします。RPEでいうと7〜8です。</p></details>
+      <details><summary>予定の回数ができませんでした</summary><p>その日は無理をせずに終えて、次回同じ重量でやり直します。2回続けてできない場合は、MAXを5%下げてメニューを作り直してください。</p></details>
+      <details><summary>8週間が終わったら？</summary><p>8週目に測った新しいMAXを入れて、メニューを作り直します。これをくり返して記録を伸ばしていきます。</p></details>
+      <details><summary>見た目を変えたい場合は？</summary><p>このツールは BIG3 の重量を伸ばすためのものです。全身の見た目をバランスよく変えたい場合は、<a href="/body-menu/">ボディメイク メニューメーカー</a>を使ってください。</p></details>
+      <details><summary>スクワットだけを重点的に伸ばしたい場合は？</summary><p><a href="/squat-program/">スクワット プログラムメーカー</a>で、スクワット専用のプログラムを作れます。苦手なところに合わせた種目や補助種目も入ります。</p></details>
+      <details><summary>ベンチプレスだけを重点的に伸ばしたい場合は？</summary><p><a href="/bench-program/">ベンチプレス プログラムメーカー</a>で、ベンチプレス専用のプログラムを作れます。苦手なところに合わせた種目や補助種目も入ります。</p></details>
+      <details><summary>何週間で何kg伸びますか？</summary><p>今の強さによって大きく変わります。研究のデータから予測する<a href="/squat-goal/">スクワット伸び計算機</a>で、目安を確かめられます。</p></details>
+      <details><summary>痛みが出たら？</summary><p>すぐに中止してください。痛みが続く場合は、医師や理学療法士に相談してください。</p></details>
+    </div>
 
     <h2 id="disclaimer">免責事項</h2>
     <div class="disclaimer">

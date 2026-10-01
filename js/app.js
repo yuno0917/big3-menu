@@ -214,12 +214,8 @@
       );
     }
     return h('li', { class: 'ex ex-acc' },
-      h('div', { class: 'ex-top' },
-        h('span', { class: 'ex-name', text: ex.name }),
-        h('span', { class: 'badge badge-acc', text: '補助' })
-      ),
-      h('div', { class: 'ex-load' }, h('span', { class: 'ex-sets', text: repText(ex.reps) + ' ' + ex.sets + 'set' })),
-      h('div', { class: 'ex-meta' }, h('span', { text: '重さは RPE ' + ex.rpe + ' になるように調整' }))
+      h('div', { class: 'ex-top' }, h('span', { class: 'ex-name', text: ex.name })),
+      h('div', { class: 'ex-load' }, h('span', { class: 'ex-sets', text: repText(ex.reps) + ' ' + ex.sets + 'set' }))
     );
   }
 
@@ -289,7 +285,7 @@
         onclick: () => selectWeek(i, false)
       },
       h('span', { text: w.week + '週' }),
-      h('span', { class: 'tab-tag', text: w.deload ? '軽め' : (w.test ? '測定' : ' ') }))
+      w.deload || w.test ? h('span', { class: 'tab-tag', text: w.deload ? '軽め' : '測定' }) : null)
     ));
     panelsEl.replaceChildren(...program.weeks.map((w, i) => renderWeek(w, i)));
   }
